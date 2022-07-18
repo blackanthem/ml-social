@@ -9,12 +9,12 @@ import pickle
 
 
 # clean data
-stop_words = stopwords.words('english')
-translator = str.maketrans('', '', string.punctuation)
-tokenizer = TweetTokenizer()
-lemmatizer = WordNetLemmatizer()
-vectoriser = pickle.load(
-    open("../models/tweet_feature_extractor.pickle", "rb"))
+__stop_words = stopwords.words('english')
+__translator = str.maketrans('', '', string.punctuation)
+__tokenizer = TweetTokenizer()
+__lemmatizer = WordNetLemmatizer()
+__vectoriser = pickle.load(
+    open("models/tweet_feature_extractor.pickle", "rb"))
 
 
 def preprocess_tweet(text: str):
@@ -24,13 +24,13 @@ def preprocess_tweet(text: str):
 
     # remove stop words
     text = " ".join([word for word in str(
-        text).split() if word not in stop_words])
+        text).split() if word not in __stop_words])
 
     # remove urls
     text = re.sub('((www.[^s]+)|(https?://[^s]+))', ' ', text)
 
     # remove punctuations
-    text = text.translate(translator)
+    text = text.translate(__translator)
 
     # remove repeating characters
     text = re.sub(r'(.)1+', r'1', text)
@@ -39,7 +39,7 @@ def preprocess_tweet(text: str):
     text = re.sub('[0-9]+', '', text)
 
     # tokenize text
-    text: list[str] = tokenizer.tokenize(text)
+    text: list[str] = __tokenizer.tokenize(text)
 
     # normalize with lemmatizer
     tokens = []
@@ -51,25 +51,25 @@ def preprocess_tweet(text: str):
         else:
             pos = 'a'
 
-        token = lemmatizer.lemmatize(token, pos)
+        token = __lemmatizer.lemmatize(token, pos)
         tokens.append(token)
 
     text = tokens
     text = " ".join(text)
 
     # extract features
-    text = vectoriser.transform([text])
+    text = __vectoriser.transform([text])
 
     return text
 
 
-classifier = pickle.load(
-    open("../models/twitter_sentiment_model.pickle", "rb"))
+__classifier = pickle.load(
+    open("models/twitter_sentiment_model.pickle", "rb"))
 
 
-def get_tweet_sentiment(tweet: str):
+def classify(tweet: str):
     processed_tweet = preprocess_tweet(tweet)
-    result = classifier.predict(processed_tweet)[0]
+    result = __classifier.predict(processed_tweet)[0]
 
     if result == 1:
         return "positive"

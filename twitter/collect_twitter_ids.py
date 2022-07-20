@@ -45,6 +45,8 @@ class TwitterStream(tweepy.StreamingClient):
         print(f"Collected {len(self.user_ids)} IDs")
 
     def save_to_csv(self):
+        if(len(self.user_ids) == 0):
+            return
         user_ids = list(self.user_ids)
         date = datetime.today().strftime('%Y-%m-%d %H-%M-%S')
 
@@ -58,7 +60,8 @@ class TwitterStream(tweepy.StreamingClient):
         print("Connected")
 
     def on_tweet(self, tweet):
-        self.user_ids.add(tweet["author_id"])
+        if tweet["lang"] == "en":
+            self.user_ids.add(tweet["author_id"])
 
     def on_response(self, response):
         self.print_ids_collected()
@@ -79,9 +82,5 @@ class TwitterStream(tweepy.StreamingClient):
 twitter_stream = TwitterStream(
     bearer_token=os.environ["BEARER_TOKEN"], wait_on_rate_limit=True)
 
-twitter_stream.sample(expansions=["author_id"], tweet_fields=["author_id"])
-
-
-# # df = pd.DataFrame({"id": l})
-
-# df.to_csv("../datasets/twitter_ids.csv", index=False)
+twitter_stream.sample(expansions=["author_id"],
+                      tweet_fields=["author_id", "lang"])

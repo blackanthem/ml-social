@@ -213,6 +213,7 @@ def get_tweet_level_features(tweets: list[Tweet]):
         "reply_h_index": reply_h_index,
         "retweets_plus_quotes_h_index": retweets_plus_quotes_h_index,
         "tweet_credibility": tweet_credibility,
+        "original_content_ratio": original_content_ratio,
         "total_tweets_w_url": total_tweets_w_url,
         "retweet_ratio": retweet_ratio,
         "like_ratio": like_ratio,
@@ -257,7 +258,7 @@ def get_influence_score(features: dict):
     return features
 
 
-def extract(id):
+def extract(id: int):
     tweets = get_all_tweets(id)
     tweet_level_features = get_tweet_level_features(tweets)
 
@@ -269,4 +270,5 @@ def extract(id):
     return result
 
 
-print(extract(1145137598379282432))
+if __name__ == "__main__":
+    print(extract(1145137598379282432))

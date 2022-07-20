@@ -1,7 +1,7 @@
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk.tag import pos_tag
-from nltk.tokenize import TweetTokenizer
+from nltk.tokenize import word_tokenize
 
 import re
 import string
@@ -11,7 +11,6 @@ import pickle
 # clean data
 __stop_words = stopwords.words('english')
 __translator = str.maketrans('', '', string.punctuation)
-__tokenizer = TweetTokenizer()
 __lemmatizer = WordNetLemmatizer()
 __vectoriser = pickle.load(
     open("models/tweet_feature_extractor.pickle", "rb"))
@@ -36,10 +35,10 @@ def preprocess_tweet(text: str):
     text = re.sub(r'(.)1+', r'1', text)
 
     # remove numbers
-    text = re.sub('[0-9]+', '', text)
+    # text = re.sub('[0-9]+', '', text)
 
     # tokenize text
-    text: list[str] = __tokenizer.tokenize(text)
+    text: list[str] = word_tokenize(text)
 
     # normalize with lemmatizer
     tokens = []
@@ -79,5 +78,6 @@ def classify(tweet: str):
         return "neutral"
 
 
-# print(get_tweet_sentiment(
-#     "through our vote ensure govt need and deserve anupam kher responds modis appeal for the 2019 elections"))
+if __name__ == "__main__":
+    print(classify(
+        "through our vote ensure govt need and deserve anupam kher responds modis appeal for the 2019 elections"))

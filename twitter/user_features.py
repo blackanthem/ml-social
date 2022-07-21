@@ -9,7 +9,7 @@ import json
 load_dotenv()
 
 client = Client(
-    bearer_token=os.environ["BEARER_TOKEN"], wait_on_rate_limit=True)
+    bearer_token=os.environ["ACADEMIC_BEARER_TOKEN"], wait_on_rate_limit=True)
 
 ACA_client = Client(
     bearer_token=os.environ["ACADEMIC_BEARER_TOKEN"], wait_on_rate_limit=True)
@@ -106,7 +106,7 @@ def get_user_level_features(id: int):
     tweet_count = public_metrics["tweet_count"]
     account_creation_date = response.data["created_at"]
     social_reputation_score = math.log(
-        (1 + followers_count) * (1+followers_count), 10) + math.log(1 + tweet_count) - math.log((1+following_count))
+        (1 + followers_count) * (1+followers_count), 10) + math.log(1 + tweet_count, 10) - math.log((1+following_count), 10)
 
     mentions = get_total_tweets_mentioning_user(
         username, account_creation_date)
